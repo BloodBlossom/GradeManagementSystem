@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.program.dao.AdminDao">
+
+    <select id="getAdInfo" resultType="Admin">
+        select * from `ad_info` where `ad_info`.ad_id = #{account}
+    </select>
+
+    <select id="selectUser" resultType="User">
+        select * from `user_info`
+        <where>
+            <if test="user_name!=''">
+                `user_info`.name = #{user_name}
+            </if>
+            <if test="user_id!=null">
+                and `user_info`.account = #{user_id}
+            </if>
+            <if test="password!=''">
+                and `user_info`.password = #{password}
+            </if>
+            <if test="type!=null">
+                and `user_info`.type = #{type}
+            </if>
+        </where>
+    </select>
+    <select id="addUser">
+        INSERT into `user_info`(account, name, password, type) VALUES (#{user_id}, #{user_name}, #{password}, #{type})
+    </select>
+    <delete id="deleteUser">
+        DELETE from `user_info` where
+        account = #{user_id} and
+        name = #{user_name} and
+        password = #{password} and
+        type = #{type}
+    </delete>
+
+
+    <select id="selectSubject" resultType="Subject">
+        select * from `su_info`
+        <where>
+            <if test="su_no!=null">
+                `su_info`.su_no = #{su_no}
+            </if>
+
+            <if test="su_name!=''">
+                and `su_info`.su_name = #{su_name}
+            </if>
+
+            <if test="tc_id!=null">
+                and `su_info`.tc_id = #{tc_id}
+            </if>
+
+            <if test="tc_name!=''">
+                and `su_info`.tc_name = #{tc_name}
+            </if>
+
+            <if test="credit!=null">
+                and `su_info`.su_credit = #{credit}
+            </if>
+        </where>
+    </select>
+    <select id="addSubject">
+        INSERT into `su_info`(su_no, su_name, tc_id, tc_name, su_credit) VALUES (#{su_no}, #{su_name}, #{tc_id}, #{tc_name}, #{credit})
+    </select>
+    <delete id="deleteSubject">
+        DELETE from `su_info` where
+        su_no = #{su_no} and
+        su_name = #{su_name} and
+        tc_id = #{tc_id} and
+        tc_name = #{tc_name} and
+        su_credit = #{credit}
+    </delete>
+
+
+    <select id="selectGrade" resultType="Grade">
+        select `su_score`.* ,`su_info`.su_name , `st_info`.st_name from `su_score`, `st_info`, `su_info`
+        <where>
+            `su_score`.st_id = `st_info`.st_id AND `su_score`.su_no = `su_info`.su_no
+            <if test="su_name!=''">
+                and `su_info`.su_name = #{su_name}
+            </if>
+            <if test="st_name!=''">
+                and `st_info`.st_name = #{st_name}
+            </if>
+            <if test="su_no!=null">
+                and `su_score`.su_no = #{su_no}
+            </if>
+            <if test="st_id!=null">
+                and `su_score`.st_id = #{st_id}
+            </if>
+            <if test="score!=null">
+                and `su_score`.score = #{score}
+            </if>
+            <if test="state!=null">
+                and `su_score`.su_state = #{state}
+            </if>
+        </where>
+    </select>
+    <select id="addGrade">
+        INSERT into `su_score`(su_no, st_id, score, su_state) VALUES (#{su_no}, #{st_id}, #{score}, #{state})
+    </select>
+    <update id="AcceptGrade">
+        update `su_score` set su_state = 2 where su_no = #{su_no} and st_id = #{st_id}
+    </update>
+    <update id="RefuseGrade">
+        update `su_score` set su_state = 3 where su_no = #{su_no} and st_id = #{st_id}
+    </update>
+
+</mapper>

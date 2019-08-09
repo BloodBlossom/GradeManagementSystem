@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.program.dao.LoginDao">
+    <select id="loginCheck" resultType="java.lang.Integer">
+        select count(account)  from `user_info` where (account = #{account} and password = #{password} and type = #{type})
+    </select>
+
+    <select id="accountCheck" resultType="java.lang.Integer">
+        select count(account)  from `user_info` where (account = #{account} and type = #{type})
+    </select>
+
+    <select id="register" resultType="Integer">
+        INSERT into `user_info`(account,password,`type`,`name`) VALUES (#{user_id},#{user_password},1,#{user_name});
+        INSERT into `st_info`(st_id,st_name,st_gender,st_age,st_pro,st_college,st_degree,st_email)
+        values (#{user_id},#{user_name},#{user_gender},#{user_age},#{user_pro},#{user_college},#{user_degree},#{user_email})
+    </select>
+
+</mapper>

@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.program.dao.StDao">
+
+    <select id="getStInfo" resultType="Student">
+        select * from `st_info` where st_id = #{account}
+    </select>
+
+    <select id="filterSubIs" resultType="Subject">
+        select * from
+        (SELECT * , if(`su_info`.su_no in (SELECT su_no from `su_score` WHERE `su_score`.st_id = #{st_id}),1,0) as is_select from `su_info`
+        where 1=1
+        <if test="tc_name!=''">
+            and  `su_info`.tc_name = #{tc_name}
+        </if>
+        <if test="su_name!=''">
+            and  `su_info`.su_name = #{su_name}
+        </if>) tab
+        where tab.is_select = #{is_select}
+    </select>
+
+    <select id="filterSub" resultType="Subject">
+        SELECT * , if(`su_info`.su_no in (SELECT su_no from `su_score` WHERE `su_score`.st_id = #{st_id}),1,0) as is_select from `su_info`
+        where 1=1
+         <if test="tc_name!=''">
+         and  `su_info`.tc_name = #{tc_name}
+         </if>
+         <if test="su_name!=''">
+         and  `su_info`.su_name = #{su_name}
+         </if>
+    </select>
+
+    <select id="selectSubject">
+        INSERT into `su_score`(su_no,st_id,score,su_state) VALUES (#{su_no},#{st_id},0,0)
+    </select>
+
+    <select id="getStScore" parameterType="java.lang.Integer" resultType="StudentScore">
+        SELECT score,su_state,`su_info`.su_credit,`su_info`.tc_name,`su_info`.su_name from ( SELECT * from `su_score` WHERE st_id = #{account}) as `a` LEFT JOIN `su_info` on (`a`.su_no = su_info.su_no)
+    </select>
+</mapper>
